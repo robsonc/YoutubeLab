@@ -1,0 +1,21 @@
+body { padding-top: 70px; }
+
+ul {
+    padding: 0;
+}
+
+li {
+    list-style: none;
+    margin: 0 10px 10px 0;
+    display: inline-block;
+    width: 330px;
+}
+
+#topbar {
+    background: #CC181E;
+}
+
+#topbar > div > a {
+    color: #fff;
+}
+

@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1 List of videos for: #{query}
+  hr
+  ul
+    each item, i in items
+      li
+        p: b= item.snippet.title
+        a(href="https://www.youtube.com/watch?v=" + item.id.videoId, target="_blank")
+          img(class="thumbnail", src=item.snippet.thumbnails.medium.url, title=item.snippet.title, width=item.snippet.thumbnails.medium.width, height=item.snippet.thumbnails.medium.height)
+        p= moment(item.snippet.publishedAt).format("YYYY/MM/DD") + " - " + item.snippet.channelTitle
+        //iframe(id="player", width="300", height="200", src="http://www.youtube.com/embed/" + item.id.videoId + "?autoplay=0", frameborder="0")

@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title Youtube Lab
+    
+    link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css", rel="stylesheet", 
+      integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7", crossorigin="anonymous")
+    link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css", rel="stylesheet", 
+      integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r", crossorigin="anonymous")
+    link(href='https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700,700italic|Roboto:400,400italic,500,500italic,700,700italic', 
+      rel='stylesheet', type='text/css')
+      
+    link(href="/stylesheets/style.css", rel="stylesheet", type="text/css")
+
+  body
+    div#topbar.nav.navbar.navbar-default.navbar-fixed-top
+      div.navbar-header
+        a.navbar-brand(href="/") Youtube Lab
+      form.navbar-form.navbar-left(role="search", action="/", method="post")
+        .form-group
+          input(type="text" name="q" class="form-control" placeholder="Search")
+          button(type="submit" class="btn btn-default") Search
+
+    div.container
+      .row
+        .col-md-12
+          block content
+    
