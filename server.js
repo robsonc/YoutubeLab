@@ -12,6 +12,7 @@ require("moment-duration-format");
 var ytdl = require('ytdl-core');
 var fs = require('fs');
 var os = require('os');
+var del = require('del');
 var ffmpeg = require('fluent-ffmpeg');
 var config = require('./config.json');
 
@@ -30,6 +31,12 @@ app.use(bodyParser.urlencoded({ 'extended': 'true' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
+
+var server = app.listen(3002, function () {
+    console.log("Listen on port " + 3002);
+});
+
+var io = require('socket.io')(server);
 
 app.get('/', function (req, res) {
     if (req.query.q) {
@@ -59,7 +66,7 @@ app.get('/', function (req, res) {
                 type: req.query.type || 'video',
                 key: config.apiKey
             }, function (err, result) {
-                console.log(JSON.stringify(result.items, null, 2));
+                //console.log(JSON.stringify(result.items, null, 2));
                 res.render('index', {
                     result: result,
                     limit: req.query.limit || 9,
@@ -93,44 +100,37 @@ app.get('/download', function (req, res, next) {
 
     var videoId = youtube_parser(req.query.url);
 
-    youtube.videos.list({
-        id: videoId,
-        part: 'id,snippet',
-        type: "video",
-        key: config.apiKey
-    }, function (err, result) {
-        var videoName = result.items[0].snippet.title;
-        var videoFileName = "./downloads/" + videoName + ".mp4";
-        var audioFileName = "./downloads/" + videoName + ".mp3";
+    var videoFileName = "./downloads/" + videoId + ".mp4";
+    var audioFileName = "./downloads/" + videoId + ".mp3";
 
-        ytdl(req.query.url)
-            .on('info', function (info, format) {
-                console.log(info.title);
+    ytdl(req.query.url)
+        .on('info', function (info, format) {
+            console.log(info.title);
+        })
+        .pipe(fs.createWriteStream(videoFileName))
+        .on('close', function () {
+
+            var proc = new ffmpeg({ source: videoFileName, nolog: true });
+
+            if (os.platform() === 'win32') {
+                proc.setFfmpegPath(path.join(__dirname, 'ffmpeg.exe'));
+                proc.setFfprobePath(path.join(__dirname, 'ffprobe.exe'));
+            } else {
+                proc.setFfmpegPath(path.join(__dirname, 'ffmpeg'));
+            }
+
+            proc.on('end', function () {
+                console.log('file has been converted successfully');
+                io.sockets.emit('message', 'O arquivo foi convertido com sucesso!');
             })
-            .pipe(fs.createWriteStream(videoFileName))
-            .on('close', function () {
+                .on('error', function (err) {
+                    console.log('an error happened: ' + err.message);
+                });
 
-                var proc = new ffmpeg({ source: videoFileName, nolog: true });
+            proc.toFormat('mp3').pipe(fs.createWriteStream(audioFileName), { end: true });
+        });
 
-                if (os.platform() === 'win32') {
-                    proc.setFfmpegPath(path.join(__dirname, 'ffmpeg.exe'));
-                    proc.setFfprobePath(path.join(__dirname, 'ffprobe.exe'));
-                } else {
-                    proc.setFfmpegPath(path.join(__dirname, 'ffmpeg'));
-                }
-
-                proc.on('end', function () {
-                    console.log('file has been converted successfully');
-                })
-                    .on('error', function (err) {
-                        console.log('an error happened: ' + err.message);
-                    });
-
-                proc.toFormat('mp3').pipe(fs.createWriteStream(audioFileName), { end: true });
-            });
-
-        res.render('download');
-    });
+    res.render('download');
 });
 
 app.get('/files', function (req, res, next) {
@@ -159,6 +159,15 @@ app.get('/files', function (req, res, next) {
     });
 });
 
-app.listen(3002, function () {
-    console.log("Listen on port " + 3002);
+app.get('/files-delete', (req, res, next) => {
+    del(['./downloads/*']).then((paths) => {
+        console.log('Deleted files and folders:\n', paths.join('\n'));
+        res.redirect('/files');
+    });
+});
+
+io.on('connection', function(socket){
+    socket.on('voice command', function(command){
+        console.log(command);
+    });
 });

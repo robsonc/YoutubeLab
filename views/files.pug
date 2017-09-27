@@ -2,6 +2,9 @@ extends layout
 
 block content
 	h1 Downloaded files
+	
+	a.btn.btn-default(href="/files-delete") Deletar todos arquivos
+	hr
 	ul
 		each file, i in fileList
 			li

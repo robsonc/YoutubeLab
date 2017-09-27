@@ -1,14 +1,20 @@
 extends layout
 
 block content
-  p#text-speech
-  button#btn-start.btn.btn-primary Start Speech  
-
   h1 List of videos for: #{query}
   if result
     p Total results: (#{totalResults})
  
   hr
+
+  div.row
+      if result
+        .col-md-6
+          if prevPageToken
+            a.btn-prev.btn.btn-info(href="?q=" + query + '&prev=' + prevPageToken + '&limit=' + limit + '&type=' + type) &laquo; Previous
+        .col-md-6
+          a.btn-next.btn.btn-info.pull-right(href="?q=" + query + '&next=' + nextPageToken + '&limit=' + limit + '&type=' + type) Next &raquo;
+
   ul.video-gallery
     each item, i in items
       li
@@ -22,62 +28,10 @@ block content
       if result
         .col-md-6
           if prevPageToken
-            a.btn.btn-default(href="?q=" + query + '&prev=' + prevPageToken + '&limit=' + limit + '&type=' + type) Previous
+            a.btn-prev.btn.btn-info(href="?q=" + query + '&prev=' + prevPageToken + '&limit=' + limit + '&type=' + type) &laquo; Previous
         .col-md-6
-          a.btn.btn-default(href="?q=" + query + '&next=' + nextPageToken + '&limit=' + limit + '&type=' + type) Next
+          a.btn-next.btn.btn-info.pull-right(href="?q=" + query + '&next=' + nextPageToken + '&limit=' + limit + '&type=' + type) Next &raquo;
 
   //- .row
   //-   .col-md-12
   //-     =JSON.stringify(items, null, 2)
-  script.
-    function synthVoice(text) {
-      const synth = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance();
-      utterance.text = text;
-      synth.speak(utterance);
-    };
-
-    function userSaid(str, s) {
-      return str.indexOf(s) > -1;
-    };
-
-    function extractSearchTerm(text) {
-      return text.trim().substring(6, text.length);
-    }
-
-    const btnStart = document.querySelector('#btn-start');
-    const btnBuscar = document.querySelector("#btn-buscar");
-    const inputBusca = document.querySelector("#input-busca");
-    const textSpeechParagraph = document.querySelector('#text-speech');
-
-    const SpeechRecognition = window.speechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    
-    recognition.continuous = true;
-    //recognition.interimResults = true;
-
-    recognition.start();
-
-    btnStart.addEventListener('click', function() {
-        recognition.start();
-    });
-
-    recognition.addEventListener('result', function(e) {
-      console.log(e.results);
-
-      let last = e.results.length - 1;
-      let text = e.results[last][0].transcript;
-
-      console.log(text);
-      textSpeechParagraph.innerHTML = text;
-      //synthVoice(text);
-
-      if (userSaid(text, "buscar")) {
-        inputBusca.value = extractSearchTerm(text);
-        //inputBusca.focus();
-        btnBuscar.click();
-        //recognition.resume();
-      }
-
-      console.log('Confidence: ' + e.results[0][0].confidence);
-    });
