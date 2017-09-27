@@ -1,0 +1,8 @@
+extends layout
+
+block content
+	h1 Downloaded files
+	ul
+		each file, i in fileList
+			li
+				a(href="/downloads/" + file)= file

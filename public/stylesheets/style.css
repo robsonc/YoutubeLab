@@ -1,10 +1,10 @@
 body { padding-top: 70px; }
 
-ul {
+ul.video-gallery {
     padding: 0;
 }
 
-li {
+ul.video-gallery > li {
     list-style: none;
     margin: 0 10px 10px 0;
     display: inline-block;
@@ -16,6 +16,10 @@ li {
 }
 
 #topbar > div > a {
+    color: #fff;
+}
+
+#topbar a {
     color: #fff;
 }
 

@@ -1,13 +1,83 @@
 extends layout
 
 block content
+  p#text-speech
+  button#btn-start.btn.btn-primary Start Speech  
+
   h1 List of videos for: #{query}
+  if result
+    p Total results: (#{totalResults})
+ 
   hr
-  ul
+  ul.video-gallery
     each item, i in items
       li
         p: b= item.snippet.title
-        a(href="https://www.youtube.com/watch?v=" + item.id.videoId, target="_blank")
-          img(class="thumbnail", src=item.snippet.thumbnails.medium.url, title=item.snippet.title, width=item.snippet.thumbnails.medium.width, height=item.snippet.thumbnails.medium.height)
-        p= moment(item.snippet.publishedAt).format("YYYY/MM/DD") + " - " + item.snippet.channelTitle
-        //iframe(id="player", width="300", height="200", src="http://www.youtube.com/embed/" + item.id.videoId + "?autoplay=0", frameborder="0")
+        iframe(id="player", width="300", height="200", src="http://www.youtube.com/embed/" + item.id + "?autoplay=0&controls=2", frameborder="0", allowFullScreen=true)
+        p= moment(item.snippet.publishedAt).format("DD/MM/YYYY") + " - " + item.snippet.channelTitle
+        p Duration: #{moment.duration(item.contentDetails.duration).format("hh:mm:ss")}
+        a.btn.btn-primary(href="/download?url=https://youtu.be/" + item.id) Download
+
+  div.row
+      if result
+        .col-md-6
+          if prevPageToken
+            a.btn.btn-default(href="?q=" + query + '&prev=' + prevPageToken + '&limit=' + limit + '&type=' + type) Previous
+        .col-md-6
+          a.btn.btn-default(href="?q=" + query + '&next=' + nextPageToken + '&limit=' + limit + '&type=' + type) Next
+
+  //- .row
+  //-   .col-md-12
+  //-     =JSON.stringify(items, null, 2)
+  script.
+    function synthVoice(text) {
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance();
+      utterance.text = text;
+      synth.speak(utterance);
+    };
+
+    function userSaid(str, s) {
+      return str.indexOf(s) > -1;
+    };
+
+    function extractSearchTerm(text) {
+      return text.trim().substring(6, text.length);
+    }
+
+    const btnStart = document.querySelector('#btn-start');
+    const btnBuscar = document.querySelector("#btn-buscar");
+    const inputBusca = document.querySelector("#input-busca");
+    const textSpeechParagraph = document.querySelector('#text-speech');
+
+    const SpeechRecognition = window.speechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.continuous = true;
+    //recognition.interimResults = true;
+
+    recognition.start();
+
+    btnStart.addEventListener('click', function() {
+        recognition.start();
+    });
+
+    recognition.addEventListener('result', function(e) {
+      console.log(e.results);
+
+      let last = e.results.length - 1;
+      let text = e.results[last][0].transcript;
+
+      console.log(text);
+      textSpeechParagraph.innerHTML = text;
+      //synthVoice(text);
+
+      if (userSaid(text, "buscar")) {
+        inputBusca.value = extractSearchTerm(text);
+        //inputBusca.focus();
+        btnBuscar.click();
+        //recognition.resume();
+      }
+
+      console.log('Confidence: ' + e.results[0][0].confidence);
+    });

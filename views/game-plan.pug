@@ -1,0 +1,133 @@
+extends layout
+
+block content
+	div(ng-controller='GamePlanController as vm')
+		h1 {{ vm.pageTitle }}
+
+		.row
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[0].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[0].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+			
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[1].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[1].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[2].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[2].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+
+		.row
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[3].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[3].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+			
+			.col-md-4
+
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[4].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[4].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+
+		.row
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[5].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[5].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+			
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[6].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[6].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[7].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[7].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+
+		.row
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[8].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[8].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+			
+			.col-md-4
+
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[9].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[9].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+
+		.row
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[10].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[10].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+			
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[11].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[11].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+
+			.col-md-4
+				.panel.panel-primary
+					.panel-heading
+						| {{ vm.data[12].description }}
+					.panel-body
+						ul
+							li(ng-repeat="technique in vm.data[12].techniques") 
+								a(href="/?q={{ ::technique.name }}") {{ ::technique.name }}
+
+					
